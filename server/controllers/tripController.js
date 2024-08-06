@@ -4,7 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Client } from '@googlemaps/google-maps-services-js';
 
-// Create an instance of the Google Maps client
+
 const client = new Client({});
 
 const createTrip = asyncHandler(async (req, res) => {
