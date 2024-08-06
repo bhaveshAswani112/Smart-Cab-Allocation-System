@@ -17,6 +17,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { APIProvider, Map, AdvancedMarker, Pin, useMap } from '@vis.gl/react-google-maps';
 import { createTrip } from "../services/tripService"; 
 
+const googleApiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+
 const defaultCenter = { lat: 22.54992, lng: 88.3392 };
 
 const formSchema = z.object({
@@ -125,7 +127,7 @@ export default function TripForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-md mx-auto">
-        <APIProvider apiKey="AIzaSyB2y-snvpLHmyl4yePLadgsg9qEG2tESPU">
+        <APIProvider apiKey={googleApiKey}>
           <Map
             style={{ width: '100%', height: '400px' }}
             defaultCenter={defaultCenter}

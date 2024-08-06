@@ -9,6 +9,8 @@ const defaultCenter = {
   lng: 88.3392   
 };
 
+const googleApiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+
 type Poi = { key: string, location: google.maps.LatLngLiteral };
 
 const PoiMarkers = (props: { pois: Poi[] }) => {
@@ -28,7 +30,7 @@ const PoiMarkers = (props: { pois: Poi[] }) => {
 
 const CabMap = () => {
   const [cabLocations, setCabLocations] = useState<Poi[]>([]);
-
+  console.log(googleApiKey)
   useEffect(() => {
     const fetchCabLocations = async () => {
       try {
@@ -49,9 +51,9 @@ const CabMap = () => {
 
     fetchCabLocations();
   }, []);
-
+  
   return (
-    <APIProvider apiKey={"AIzaSyB2y-snvpLHmyl4yePLadgsg9qEG2tESPU"}>
+    <APIProvider apiKey={googleApiKey}>
       <Map
         style={{ width: '100vw', height: '100vh' }}
         defaultCenter={defaultCenter}

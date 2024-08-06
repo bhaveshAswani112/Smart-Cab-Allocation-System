@@ -105,6 +105,7 @@ const logoutUser = asyncHandler(async (req, res) => {
             .clearCookie("refreshToken", options)
             .json(new ApiResponse(200, {}, "User logged out successfully"));
     } catch (error) {
+        console.log(error)
         return res.status(500).json(new ApiResponse(500, {}, "Error during logout"));
     }
 });
@@ -137,6 +138,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
                 refreshToken
             }, "Access token refreshed"));
     } catch (error) {
+
         return res.status(500).json(new ApiResponse(500, {}, "Error refreshing access token"));
     }
 });

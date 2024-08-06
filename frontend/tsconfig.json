@@ -6,6 +6,7 @@
       "@/*": ["./src/*"]
     },
     "target": "es6",
+    "module": "esnext",
     "jsx": "react-jsx", // if using React 17+
     "strict": true,
     "esModuleInterop": true,

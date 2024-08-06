@@ -9,7 +9,10 @@ const client = new Client({});
 
 const createTrip = asyncHandler(async (req, res) => {
     const { startLocation, endLocation } = req.body;
-
+    console.log("Start location")
+    console.log(startLocation)
+    console.log("End location")
+    console.log(endLocation)
     try {
         if (!startLocation?.coordinates || !endLocation?.coordinates) {
             return res.status(400).json(
@@ -17,8 +20,17 @@ const createTrip = asyncHandler(async (req, res) => {
             );
         }
 
-        // Fetch all available cabs
-        const availableCabs = await Cab.find({ status: 'idle' });
+        
+        const availableCabs = await Cab.find({
+            location: {
+                $near: {
+                    $geometry: { type: 'Point', coordinates: [startLocation.coordinates[0], startLocation.coordinates[1]] },
+                    $maxDistance: 10000 // 10 km
+                }
+            },
+            status: 'idle'
+        });
+        console.log(availableCabs)
 
         if (availableCabs.length === 0) {
             return res.status(404).json(
@@ -29,7 +41,6 @@ const createTrip = asyncHandler(async (req, res) => {
         let nearestCab = null;
         let minDuration = Infinity;
 
-        // Find the nearest cab based on travel time
         for (const cab of availableCabs) {
             const [cabLng, cabLat] = cab.location.coordinates;
             const [startLng, startLat] = startLocation.coordinates;
@@ -38,12 +49,12 @@ const createTrip = asyncHandler(async (req, res) => {
                 params: {
                     origin: `${cabLat},${cabLng}`,
                     destination: `${startLat},${startLng}`,
-                    mode: 'driving', // Specify driving mode
-                    departure_time: 'now', // Consider current traffic conditions
+                    mode: 'driving', 
+                    departure_time: 'now', 
                     key: process.env.GOOGLE_MAPS_API_KEY
                 }
             });
-
+            console.log(response)
             const duration = response.data.routes[0].legs[0].duration_in_traffic.value;
             console.log(duration)
 
@@ -53,7 +64,7 @@ const createTrip = asyncHandler(async (req, res) => {
             }
         }
 
-        // Create the trip
+        
         const trip = new Trip({
             startLocation: { type: 'Point', coordinates: startLocation.coordinates },
             endLocation: { type: 'Point', coordinates: endLocation.coordinates },
@@ -61,11 +72,11 @@ const createTrip = asyncHandler(async (req, res) => {
             userId: req.user._id,
         });
 
-        // Update cab status
+    
         nearestCab.status = 'engaged';
         await nearestCab.save();
 
-        // Save the trip
+        
         await trip.save();
 
         return res.status(201).json(

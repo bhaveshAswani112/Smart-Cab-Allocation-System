@@ -9,6 +9,7 @@ const getAllCabs = asyncHandler(async (req, res) => {
             new ApiResponse(200, { cabs }, 'Cabs fetched successfully')
         );
     } catch (error) {
+        console.log(error)
         return res.status(500).json(
             new ApiResponse(500, {}, `Error fetching cabs: ${error.message}`)
         );
